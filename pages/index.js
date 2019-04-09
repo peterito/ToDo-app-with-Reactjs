@@ -1,3 +1,4 @@
+import Head from 'next/head'
 import React, { Component } from 'react';
 class App extends Component {
     constructor(){
@@ -5,24 +6,29 @@ class App extends Component {
       this.state = {
         message: 'WELCOME TO MY TODO APP',
         inputText:'',
-        todoList: [{
+        todos: [{
           name: 'Start ',
           done: false
         }]
       };
     }
+    componentDidMount(){
+      fetch('/todos')
+      .then(res => res.json())
+      .then(todos => this.setState({todos}));
+    }
     formSubmitted(event){
       event.preventDefault();
   
-      const todoList = this.state.todoList.slice();
-      todoList.push({
+      const todos = this.state.todos.slice();
+      todos.push({
         name: this.state.inputText,
         done: false
       })
   
       this.setState({
         inputText:'',
-        todoList
+        todos
       });
 
     }
@@ -33,25 +39,25 @@ class App extends Component {
     }
   
     toggleTodoDone(event, index){
-      const todoList = [...this.state.todoList] 
-      todoList[index]= {...todoList[index]};  
-      todoList[index].done = event.target.checked; 
+      const todos = [...this.state.todos] 
+      todos[index]= {...todos[index]};  
+      todos[index].done = event.target.checked; 
       this.setState({
-        todoList 
+        todos 
       });
     }
   
     deleteTodo(index){
-      const todoList = [...this.state.todoList]
-      todoList.splice(index, 1)
+      const todos = [...this.state.todos]
+      todos.splice(index, 1)
   
       this.setState({
-        todoList
+        todos
       })
     }
   
     Donetasks(){
-      const todoList = this.state.todoList.map(todo => {
+      const todos = this.state.todos.map(todo => {
         return{
           name: todo.name,
           done: true
@@ -59,12 +65,12 @@ class App extends Component {
       });
   
       this.setState({
-        todoList
+        todos
       });
     }
   
     unDonetasks(){
-      const todoList = this.state.todoList.map(todo => {
+      const todos = this.state.todos.map(todo => {
         return{
           name: todo.name,
           done: false
@@ -72,7 +78,7 @@ class App extends Component {
       })
   
       this.setState({
-        todoList
+        todos
       })
     }
     render() {
@@ -96,7 +102,7 @@ class App extends Component {
           <button onClick={() => this.unDonetasks()}>UnMark All</button>
           </div>
           <ul>
-            {this.state.todoList.map((todo, index) => {
+            {this.state.todos.map((todo, index) => {
               return (<li key={todo.name}>
                 <input onChange={(event) => this.toggleTodoDone(event, index)} type="checkbox" checked={todo.done}/>
                 <span className={todo.done ? 'done' : ''}>{todo.name}</span>
@@ -129,7 +135,7 @@ class App extends Component {
           
           .content{
             margin: 20px auto 20px auto;
-            width: 450px;
+            width: 500px;
             min-height: 580px;
             border: 5px solid #01b9ff;
             padding: 20px; 
@@ -168,7 +174,7 @@ class App extends Component {
             text-decoration: underline;
           }
           .content form input{
-            width: 80%;
+            width: 50%;
             padding: 5px;
             margin-left: 5px;
             margin-right: 10px;
@@ -177,18 +183,17 @@ class App extends Component {
           }
           
           .content ul li{
-            margin-top: 2px;
+            margin-top: 10px;
             border: 1px solid rgb(65, 3, 19);
-            width: 100%;
+            width: 90%;
+            margin: 20px;
             font-size: 20px;
             list-style: none;
           }
           .content ul button{
+            float: right;
             background-color: rgb(56, 15, 15);
-            margin-top: 10px;
             padding: 2px 10px;
-            margin-left: 250px;
-            margin-bottom: 5px;
           }
           code {
             font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
